@@ -1,13 +1,17 @@
 <template>
   <v-container fluid>
-    <v-app-bar app color="#0F4C81">
-      <img :src="img" />
-    </v-app-bar>
-
     <v-row>
-      <v-col cols="2">coluna 1</v-col>
-      <v-col cols="8"></v-col>
-      <v-col cols="2">coluna 1</v-col>
+      <v-app-bar app color="#0F4C81" height="100">
+        <img :src="img" />
+      </v-app-bar>
+
+      <v-row class="row-2">
+        <v-col cols="2" />
+
+        <v-col cols="8"><slot /></v-col>
+
+        <v-col cols="2" />
+      </v-row>
     </v-row>
   </v-container>
 </template>
@@ -28,5 +32,9 @@ export default {
 <style>
 .v-toolbar__content {
   justify-content: center;
+}
+
+.row-2 {
+  margin-top: 100px;
 }
 </style>
