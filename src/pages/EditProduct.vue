@@ -1,6 +1,6 @@
 <template>
   <layout-app>
-    <div class="main">
+    <div>
       <v-breadcrumbs divider=">" :items="breadcrumbs" />
 
       <h1>Editar Produto</h1>

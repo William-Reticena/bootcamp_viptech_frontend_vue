@@ -1,14 +1,20 @@
 <template>
   <div class="form-wrapper">
     <v-form>
-      <v-text-field autofocus label="Nome do Produto" outlined />
+      <v-text-field
+        autofocus
+        color="#0F4C81"
+        dense
+        label="Nome do Produto"
+        outlined
+      />
 
-      <v-text-field label="Marca" outlined />
+      <v-text-field color="#0F4C81" dense label="Marca" outlined />
 
       <div class="inputs-wrapper">
-        <v-text-field label="Valor" outlined />
+        <v-text-field color="#0F4C81" dense label="Valor" outlined />
 
-        <v-select :items="options" label="Cor" outlined />
+        <v-select color="#0F4C81" dense :items="options" label="Cor" outlined />
 
         <v-menu
           v-model="menu2"
@@ -19,6 +25,8 @@
         >
           <template v-slot:activator="{ on, attrs }">
             <v-text-field
+              color="#0F4C81"
+              dense
               v-model="date"
               label="Data de Cadastro"
               prepend-inner-icon="mdi-calendar"
@@ -28,7 +36,12 @@
               v-on="on"
             ></v-text-field>
           </template>
-          <v-date-picker v-model="date" @input="menu2 = false"></v-date-picker>
+
+          <v-date-picker
+            color="#0F4C81"
+            v-model="date"
+            @input="menu2 = false"
+          />
         </v-menu>
 
         <div class="img-box">

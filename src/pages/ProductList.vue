@@ -10,19 +10,40 @@
         Adicionar Produto
       </v-btn>
     </div>
-    <product-card />
+    <product-card
+      v-for="product in products"
+      :key="product.id"
+      :product="product"
+    />
   </layout-app>
 </template>
 
 <script>
+import api from "@/services/api/index";
 import LayoutApp from "@/components/LayoutApp.vue";
 import ProductCard from "@/components/ProductCard.vue";
 
 export default {
   name: "ProductList",
+  created() {
+    this.getProducts();
+  },
+  data: () => ({
+    products: [],
+  }),
   components: {
     LayoutApp,
     ProductCard,
+  },
+  methods: {
+    async getProducts() {
+      try {
+        const { data } = await api.get("/product");
+        this.products = data;
+      } catch (error) {
+        console.log(error);
+      }
+    },
   },
 };
 </script>

@@ -1,34 +1,22 @@
 <template>
   <v-card class="card" elevation="4">
     <v-card class="card-img" elevation="0">
-      <v-img contain height="110" :src="product.img" />
+      <v-img contain height="110" :src="product.img ? product.img : img" />
     </v-card>
 
     <div class="product-info">
       <p class="product-name">{{ product.name }}</p>
       <p>{{ product.brand }}</p>
-      <p class="product-price">{{ product.price }}</p>
+      <p class="product-price">R$ {{ price }}</p>
       <p>Cor: {{ product.color }}</p>
     </div>
 
     <div class="actions-buttons">
-      <v-btn
-        class="fab"
-        color="#0f4c81"
-        fab
-        small
-        @click="$router.push('/pagamento')"
-      >
+      <v-btn class="fab" color="#0f4c81" fab small to="/pagamento">
         <v-icon> mdi-cart </v-icon>
       </v-btn>
 
-      <v-btn
-        class="fab"
-        color="#0f4c81"
-        fab
-        small
-        @click="$router.push('/editar-produto')"
-      >
+      <v-btn class="fab" color="#0f4c81" fab small to="/editar-produto">
         <v-icon> mdi-pencil </v-icon>
       </v-btn>
 
@@ -40,18 +28,12 @@
     <v-dialog v-model="dialog" max-width="550">
       <v-card>
         <v-card-title class="text-h5">
-          Você realmente deseja excluir o item: <strong>Teste</strong>
+          Você realmente deseja excluir o item:
+          <strong>{{ product.name }}</strong>
         </v-card-title>
 
-        <!-- <v-card-text>
-          Let Google help apps determine location. This means sending anonymous
-          location data to Google, even when no apps are running.
-        </v-card-text> -->
-
         <div class="btn-actions">
-          <!-- <v-spacer></v-spacer> -->
-
-          <v-btn color="#0F4C81" @click="dialog = false"> Confirmar </v-btn>
+          <v-btn color="#0F4C81" @click="handleDelete"> Confirmar </v-btn>
 
           <v-btn color="error" @click="dialog = false"> Cancelar </v-btn>
         </div>
@@ -61,20 +43,30 @@
 </template>
 
 <script>
-import { products } from "../assets/fakeData/products/products";
+import api from "@/services/api";
+import formatNumber from "@/utils/formatNumber";
+import addPhoto from "@/assets/Add_photo_alternate.png";
 
 export default {
   name: "ProductCard",
   data: () => ({
-    product: {
-      img: products[0].img,
-      name: products[0].name,
-      brand: products[0].brand,
-      price: products[0].price,
-      color: products[0].color,
-    },
     dialog: false,
+    img: addPhoto,
+    price: "",
   }),
+  created() {
+    this.format();
+  },
+  methods: {
+    format() {
+      this.price = formatNumber(this.product.price);
+    },
+    async handleDelete() {
+      await api.delete(`/product/${this.product.id}`);
+      window.location.reload();
+    },
+  },
+  props: ["product"],
 };
 </script>
 
@@ -102,7 +94,7 @@ p {
 }
 
 .product-name {
-  font-size: 1.1em;
+  font-size: 1.2em;
 }
 
 .product-price {
