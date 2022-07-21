@@ -21,11 +21,9 @@ import logo from "../assets/Logo-Viptech.png";
 
 export default {
   name: "LayoutApp",
-  data() {
-    return {
-      img: logo,
-    };
-  },
+  data: () => ({
+    img: logo,
+  }),
 };
 </script>
 
