@@ -37,28 +37,24 @@
       </v-btn>
     </div>
 
-    <v-dialog v-model="dialog" max-width="290">
+    <v-dialog v-model="dialog" max-width="550">
       <v-card>
         <v-card-title class="text-h5">
-          Use Google's location service?
+          Você realmente deseja excluir o item: <strong>Teste</strong>
         </v-card-title>
 
-        <v-card-text>
+        <!-- <v-card-text>
           Let Google help apps determine location. This means sending anonymous
           location data to Google, even when no apps are running.
-        </v-card-text>
+        </v-card-text> -->
 
-        <v-card-actions>
-          <v-spacer></v-spacer>
+        <div class="btn-actions">
+          <!-- <v-spacer></v-spacer> -->
 
-          <v-btn color="green darken-1" text @click="dialog = false">
-            Disagree
-          </v-btn>
+          <v-btn color="#0F4C81" @click="dialog = false"> Confirmar </v-btn>
 
-          <v-btn color="green darken-1" text @click="dialog = false">
-            Agree
-          </v-btn>
-        </v-card-actions>
+          <v-btn color="error" @click="dialog = false"> Cancelar </v-btn>
+        </div>
       </v-card>
     </v-dialog>
   </v-card>
@@ -125,5 +121,13 @@ p {
 
 .fab {
   margin-left: 16px;
+}
+
+.btn-actions {
+  display: flex;
+  gap: 16px;
+  justify-content: center;
+  margin-top: 40px;
+  padding-bottom: 16px;
 }
 </style>
