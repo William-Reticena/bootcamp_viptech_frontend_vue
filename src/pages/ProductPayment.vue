@@ -10,20 +10,20 @@
 
         <v-card class="card-product-main" outlined>
           <div class="box-product">
-            <div>
+            <div class="img-div">
               <v-img
                 contain
                 height="100"
-                src="@/assets/fakeData/img/IM3-1.png"
+                :src="product.img ? product.img : img"
               />
             </div>
 
             <div class="box-product-info">
-              <p>produto nome</p>
+              <p>{{ product.name }}</p>
 
-              <p>Produto marca</p>
+              <p>{{ product.brand }}</p>
 
-              <p>Produto produto cor</p>
+              <p>Cor: {{ product.color }}</p>
             </div>
           </div>
 
@@ -33,15 +33,26 @@
             <div class="box-qtd-inner">
               <p>Quantidade:</p>
 
-              <v-btn icon><v-icon>mdi-minus-circle-outline</v-icon></v-btn>
+              <v-btn :disabled="isPurchased" icon @click="decrement">
+                <v-icon>mdi-minus-circle-outline</v-icon>
+              </v-btn>
 
               <div class="text-field">
-                <v-text-field color="#0F4C81" hide-details outlined dense />
+                <v-text-field
+                  color="#0F4C81"
+                  :disabled="isPurchased"
+                  hide-details
+                  outlined
+                  dense
+                  v-model="qtd"
+                />
               </div>
 
-              <v-btn icon><v-icon>mdi-plus-circle-outline</v-icon></v-btn>
+              <v-btn :disabled="isPurchased" icon @click="increment">
+                <v-icon>mdi-plus-circle-outline</v-icon>
+              </v-btn>
             </div>
-            <p>R$ 300</p>
+            <p>R$ {{ format(product.price) }}</p>
           </div>
         </v-card>
       </div>
@@ -52,35 +63,49 @@
         <v-card class="card-order-summary" outlined>
           <div class="box-order-summary">
             <p>Subtotal</p>
-            <p>R$ 300</p>
+            <p>R$ {{ format(subtotal) }}</p>
           </div>
 
           <v-divider />
 
           <div class="box-order-summary">
             <p>Frete</p>
-            <p>R$ 30</p>
+            <p>R$ {{ format(shipping) }}</p>
           </div>
 
           <v-divider />
 
           <div class="box-order-summary">
             <p>Valor Total</p>
-            <p>R$ 300</p>
+            <p>R$ {{ format(total) }}</p>
           </div>
 
-          <v-btn class="payment" color="#0F4C81">Pagar</v-btn>
+          <v-btn
+            class="payment"
+            color="#0F4C81"
+            :disabled="isPurchased"
+            @click="handlePurchase"
+          >
+            Pagar
+          </v-btn>
         </v-card>
 
-        <v-card class="card-payment-finished" outlined>
+        <v-card v-show="isPurchased" class="card-payment-finished" outlined>
           <p class="payment-success">
             <strong>Pagamento realizado com Sucesso!</strong>
           </p>
 
           <p class="amount-notes">Este pagamento foi realizado com</p>
 
-          <p class="money-bill">
-            <strong>3 cédulas</strong> de <strong>R$ 100,00</strong>
+          <p v-for="note in bankNotes" :key="note.bankNote" class="money-bill">
+            <strong>
+              {{ note.amount }}
+              {{
+                plural(note.amount, note.bankNote !== 1 ? "cédula" : "moeda")
+              }}
+            </strong>
+            de
+            <strong>R$ {{ note.bankNote }},00</strong>
           </p>
         </v-card>
       </div>
@@ -90,12 +115,23 @@
 
 <script>
 import LayoutApp from "@/components/LayoutApp.vue";
+import api from "@/services/api";
+import addPhoto from "@/assets/Add_photo_alternate.png";
+import formatNumber from "@/utils/formatNumber";
+import countNumberNotes from "@/utils/countNumberNotes";
+import isPlural from "@/utils/isPlural";
 
 export default {
   name: "ProductPayment",
+
+  created() {
+    this.getById(this.$route.params);
+  },
+
   components: {
     LayoutApp,
   },
+
   data: () => ({
     breadcrumbs: [
       {
@@ -104,7 +140,60 @@ export default {
       },
       { text: "Carrinho" },
     ],
+    product: {},
+    img: addPhoto,
+    qtd: 1,
+    bankNotes: [],
+    isPurchased: false,
   }),
+
+  methods: {
+    async getById({ id }) {
+      try {
+        const { data } = await api.get(`/product/${id}`);
+
+        this.product = data;
+      } catch (error) {
+        console.log(error);
+      }
+    },
+
+    format(price) {
+      return formatNumber(price);
+    },
+
+    plural(amount, word) {
+      return isPlural(amount, word);
+    },
+
+    decrement() {
+      if (this.qtd > 1) this.qtd -= 1;
+    },
+
+    increment() {
+      this.qtd += 1;
+    },
+
+    handlePurchase() {
+      this.bankNotes = countNumberNotes(this.total);
+
+      this.isPurchased = true;
+    },
+  },
+
+  computed: {
+    subtotal() {
+      return this.product.price * this.qtd;
+    },
+
+    shipping() {
+      return this.subtotal * 0.1;
+    },
+
+    total() {
+      return this.subtotal + this.shipping;
+    },
+  },
 };
 </script>
 
@@ -141,6 +230,10 @@ export default {
   padding: 8px 0 8px;
 }
 
+.img-div {
+  width: 100px;
+}
+
 p {
   margin: 0;
 }
@@ -150,6 +243,7 @@ p {
   flex-direction: column;
   flex-grow: 1;
   justify-content: center;
+  margin-left: 24px;
 }
 
 .box-qtd {

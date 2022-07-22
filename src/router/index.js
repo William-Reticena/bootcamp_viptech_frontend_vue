@@ -27,7 +27,7 @@ export default new VueRouter({
       component: EditProduct,
     },
     {
-      path: "/pagamento",
+      path: "/pagamento/:id",
       component: ProductPayment,
     },
   ],

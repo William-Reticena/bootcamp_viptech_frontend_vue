@@ -12,7 +12,13 @@
     </div>
 
     <div class="actions-buttons">
-      <v-btn class="fab" color="#0f4c81" fab small to="/pagamento">
+      <v-btn
+        class="fab"
+        color="#0f4c81"
+        fab
+        small
+        :to="`/pagamento/${product.id}`"
+      >
         <v-icon> mdi-cart </v-icon>
       </v-btn>
 
