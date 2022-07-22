@@ -7,7 +7,7 @@
     <div class="product-info">
       <p class="product-name">{{ product.name }}</p>
       <p>{{ product.brand }}</p>
-      <p class="product-price">R$ {{ price }}</p>
+      <p class="product-price">R$ {{ format(product.price) }}</p>
       <p>Cor: {{ product.color }}</p>
     </div>
 
@@ -52,14 +52,10 @@ export default {
   data: () => ({
     dialog: false,
     img: addPhoto,
-    price: "",
   }),
-  created() {
-    this.format();
-  },
   methods: {
-    format() {
-      this.price = formatNumber(this.product.price);
+    format(price) {
+      return formatNumber(price);
     },
     async handleDelete() {
       await api.delete(`/product/${this.product.id}`);

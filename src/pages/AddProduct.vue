@@ -5,7 +5,7 @@
 
       <h1>Adicionar Produto</h1>
 
-      <product-form />
+      <product-form :initialValues="formProduct" :onSubmit="handleCreate" />
     </div>
   </layout-app>
 </template>
@@ -13,6 +13,7 @@
 <script>
 import LayoutApp from "@/components/LayoutApp.vue";
 import ProductForm from "@/components/ProductForm.vue";
+import api from "@/services/api";
 
 export default {
   name: "AddProduct",
@@ -28,7 +29,40 @@ export default {
       },
       { text: "Adicionar Produto" },
     ],
+
+    formProduct: {
+      name: "",
+      brand: "",
+      price: "",
+      color: "",
+      createdAt: "",
+      productImg: "",
+      productObj: "",
+    },
   }),
+  methods: {
+    async handleCreate() {
+      const file = new FormData();
+
+      file.append("file", this.formProduct.productObj);
+      file.append("name", this.formProduct.name);
+      file.append("brand", this.formProduct.brand);
+      file.append(
+        "price",
+        parseFloat(this.formProduct.price.toString().replace(",", "."))
+      );
+      file.append("color", this.formProduct.color);
+      file.append("createdAt", this.date);
+
+      try {
+        await api.post("product", file);
+
+        this.$router.push("/listar-produtos");
+      } catch (error) {
+        console.log(error);
+      }
+    },
+  },
 };
 </script>
 
