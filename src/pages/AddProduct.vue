@@ -52,7 +52,12 @@ export default {
         parseFloat(this.formProduct.price.toString().replace(",", "."))
       );
       file.append("color", this.formProduct.color);
-      file.append("createdAt", this.date);
+      file.append(
+        "created_at",
+        new Date(
+          this.formProduct.createdAt.split("/").reverse().join("-")
+        ).toISOString()
+      );
 
       try {
         await api.post("product", file);

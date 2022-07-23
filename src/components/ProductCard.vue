@@ -22,7 +22,13 @@
         <v-icon> mdi-cart </v-icon>
       </v-btn>
 
-      <v-btn class="fab" color="#0f4c81" fab small to="/editar-produto">
+      <v-btn
+        class="fab"
+        color="#0f4c81"
+        fab
+        small
+        :to="`/editar-produto/${product.id}`"
+      >
         <v-icon> mdi-pencil </v-icon>
       </v-btn>
 

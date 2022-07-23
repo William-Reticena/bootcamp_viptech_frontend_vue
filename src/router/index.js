@@ -23,7 +23,7 @@ export default new VueRouter({
       component: AddProduct,
     },
     {
-      path: "/editar-produto",
+      path: "/editar-produto/:id",
       component: EditProduct,
     },
     {

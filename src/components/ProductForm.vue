@@ -85,10 +85,18 @@ export default {
   props: ["initialValues", "onSubmit"],
   created() {
     this.formProduct = this.initialValues;
-    this.formProduct.createdAt = this.date.split("-").reverse().join("/");
+    (this.date = this.formProduct.createdAt
+      ? new Date(this.formProduct.createdAt).toISOString().substr(0, 10)
+      : new Date(Date.now() - new Date().getTimezoneOffset() * 60000)
+          .toISOString()
+          .substr(0, 10)),
+      (this.formProduct.createdAt = this.date.split("-").reverse().join("/"));
+    this.img = this.formProduct.productObj
+      ? this.formProduct.productObj
+      : addPhoto;
   },
   data: () => ({
-    img: addPhoto,
+    img: "",
     options: ["Branco", "Preto", "Azul"],
     date: new Date(Date.now() - new Date().getTimezoneOffset() * 60000)
       .toISOString()
