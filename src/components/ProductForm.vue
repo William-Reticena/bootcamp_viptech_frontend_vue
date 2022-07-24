@@ -6,7 +6,12 @@
         dense
         label="Nome do Produto"
         outlined
+        placeholder="Digite o nome do produto"
         v-model="formProduct.name"
+        @change="$v.formProduct.name.$touch()"
+        :error-messages="
+          $v.formProduct.name.$error ? 'Este campo é obrigatório!' : ''
+        "
       />
 
       <v-text-field
@@ -14,16 +19,27 @@
         dense
         label="Marca"
         outlined
+        placeholder="Digite a marca do produto"
         v-model="formProduct.brand"
+        @change="$v.formProduct.brand.$touch()"
+        :error-messages="
+          $v.formProduct.brand.$error ? 'Este campo é obrigatório!' : ''
+        "
       />
 
       <div class="inputs-wrapper">
         <v-text-field
+          prefix="R$"
           color="#0F4C81"
           dense
           label="Valor"
           outlined
+          placeholder="000,00"
           v-model="formProduct.price"
+          @change="$v.formProduct.price.$touch()"
+          :error-messages="
+            $v.formProduct.price.$error ? 'Este campo é obrigatório!' : ''
+          "
         />
 
         <v-select
@@ -33,6 +49,10 @@
           label="Cor"
           outlined
           v-model="formProduct.color"
+          @change="$v.formProduct.color.$touch()"
+          :error-messages="
+            $v.formProduct.color.$error ? 'Este campo é obrigatório!' : ''
+          "
         />
 
         <v-menu
@@ -79,10 +99,21 @@
 
 <script>
 import addPhoto from "@/assets/Add_photo_alternate.png";
+import { required, helpers } from "vuelidate/lib/validators";
+
+const onlyNumbers = helpers.regex(
+  "onlyNumbers",
+  /(^[0-9]*(,|\.)?([0-9]{0,2})?$)(?![A-Za-z])/
+);
+// const onlyNumbers = helpers.withMessage(
+//   () => "sosdf",
+//   helpers.regex("onlyNumbers", /(^[0-9]*(,|\.)?([0-9]{0,2})?$)(?![A-Za-z])/)
+// );
 
 export default {
   name: "ProductForm",
   props: ["initialValues", "onSubmit"],
+
   created() {
     this.formProduct = this.initialValues;
     (this.date = this.formProduct.createdAt
@@ -95,18 +126,40 @@ export default {
       ? this.formProduct.productObj
       : addPhoto;
   },
-  data: () => ({
-    img: "",
-    options: ["Branco", "Preto", "Azul"],
-    date: new Date(Date.now() - new Date().getTimezoneOffset() * 60000)
-      .toISOString()
-      .substr(0, 10),
-    menu2: false,
-    formProduct: {},
-  }),
+
+  data() {
+    return {
+      img: "",
+      options: ["Branco", "Preto", "Azul"],
+      date: new Date(Date.now() - new Date().getTimezoneOffset() * 60000)
+        .toISOString()
+        .substr(0, 10),
+      menu2: false,
+      formProduct: {},
+    };
+  },
+
+  validations() {
+    return {
+      formProduct: {
+        name: { required },
+        brand: { required },
+        price: {
+          required,
+          onlyNumbers,
+        },
+        color: { required },
+      },
+    };
+  },
+
   methods: {
     submitForm() {
-      this.onSubmit();
+      this.$v.$touch();
+
+      if (!this.$v.$error) {
+        this.onSubmit();
+      }
     },
 
     handleImgClick() {

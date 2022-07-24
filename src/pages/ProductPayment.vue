@@ -19,7 +19,7 @@
             </div>
 
             <div class="box-product-info">
-              <p>{{ product.name }}</p>
+              <p class="typoProductName">{{ product.name }}</p>
 
               <p>{{ product.brand }}</p>
 
@@ -39,12 +39,16 @@
 
               <div class="text-field">
                 <v-text-field
+                  autofocus
                   color="#0F4C81"
                   :disabled="isPurchased"
                   hide-details
                   outlined
                   dense
+                  @input="handleChange"
+                  @blur="handleBlur"
                   v-model="qtd"
+                  :key="key"
                 />
               </div>
 
@@ -68,10 +72,21 @@
 
           <v-divider />
 
-          <div class="box-order-summary">
-            <p>Frete</p>
-            <p>R$ {{ format(shipping) }}</p>
-          </div>
+          <v-tooltip bottom>
+            <template v-slot:activator="{ on, attrs }">
+              <div class="box-order-summary">
+                <p>
+                  Frete
+                  <v-icon v-on="on" v-bind="attrs" color="red" small>
+                    mdi-information
+                  </v-icon>
+                </p>
+
+                <p>R$ {{ format(shipping) }}</p>
+              </div>
+            </template>
+            <span>Preço calculado em 10% do valor produto</span>
+          </v-tooltip>
 
           <v-divider />
 
@@ -145,6 +160,7 @@ export default {
     qtd: 1,
     bankNotes: [],
     isPurchased: false,
+    key: 1,
   }),
 
   methods: {
@@ -178,6 +194,19 @@ export default {
       this.bankNotes = countNumberNotes(this.total);
 
       this.isPurchased = true;
+    },
+
+    handleBlur(event) {
+      if (event.target.value === "") this.qtd = 1;
+    },
+
+    handleChange(event) {
+      this.qtd = event;
+
+      if (parseInt(event) <= 0 || isNaN(event) || /\./.test(event)) {
+        this.qtd = 1;
+        this.key += 1;
+      }
     },
   },
 
@@ -244,6 +273,10 @@ p {
   flex-grow: 1;
   justify-content: center;
   margin-left: 24px;
+}
+
+.typoProductName {
+  font-size: 1.2em;
 }
 
 .box-qtd {
