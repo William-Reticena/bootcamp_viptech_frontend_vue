@@ -66,7 +66,7 @@
 
         <v-card class="card-order-summary" outlined>
           <div class="box-order-summary">
-            <p>Subtotal</p>
+            <p>Subtotal {{ qtdItem }}</p>
             <p>R$ {{ format(subtotal) }}</p>
           </div>
 
@@ -205,7 +205,7 @@ export default {
 
       if (parseInt(event) <= 0 || isNaN(event) || /\./.test(event)) {
         this.qtd = 1;
-        this.key += 1;
+        // this.key +=  ;
       }
     },
   },
@@ -221,6 +221,10 @@ export default {
 
     total() {
       return this.subtotal + this.shipping;
+    },
+
+    qtdItem() {
+      return this.qtd ? `(${this.qtd} ${isPlural(this.qtd, "item")})` : "";
     },
   },
 };

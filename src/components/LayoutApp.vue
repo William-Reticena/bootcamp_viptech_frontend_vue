@@ -1,7 +1,7 @@
 <template>
   <v-container fluid>
     <v-row>
-      <v-app-bar app color="#0F4C81" height="100">
+      <v-app-bar app color="#00264B" height="100">
         <img :src="img" />
       </v-app-bar>
 
